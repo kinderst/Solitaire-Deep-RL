@@ -10,11 +10,6 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 
-import torch
-import torch.nn as nn
-import torch.optim as optim
-import torch.nn.functional as F
-
 from gym_env import solitaire_env
 
 from gym.wrappers import Monitor
