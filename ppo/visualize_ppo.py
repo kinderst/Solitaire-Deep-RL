@@ -16,7 +16,7 @@ from gym.wrappers import Monitor
 
 save_location = os.path.dirname(os.path.realpath(__file__)) + '/recordings'
 
-env = solitaire_env.SolitaireWorldEnv()
+env = solitaire_env.SolitaireWorldEnv(render_mode="human")
 env = Monitor(env, directory=save_location, force=True)
 
 def get_suit_val(card_param):
