@@ -17,7 +17,7 @@ from gym.wrappers import Monitor
 save_location = os.path.dirname(os.path.realpath(__file__)) + '/recordings'
 
 env = solitaire_env.SolitaireWorldEnv(render_mode="human")
-env = Monitor(env, directory=save_location, force=True)
+env = Monitor(env, directory=save_location, force=True, video_callable=lambda episode_id: True)
 
 def get_suit_val(card_param):
     if card_param == 0:
