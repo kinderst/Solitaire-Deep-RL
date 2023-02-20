@@ -12,12 +12,16 @@ from tensorflow.keras import layers
 
 from gym_env import solitaire_env
 
-from gym.wrappers import Monitor
+#from gym.wrappers import Monitor
+from gym.wrappers.record_video import RecordVideo
 
-save_location = os.path.dirname(os.path.realpath(__file__)) + '/recordings'
+mdir = save_location = os.path.dirname(os.path.realpath(__file__)) + '/recordings'
 
 env = solitaire_env.SolitaireWorldEnv(render_mode="human")
-env = Monitor(env, directory=save_location, force=True, video_callable=lambda episode_id: True)
+#env = Monitor(env, directory=save_location, force=True, video_callable=lambda episode_id: True)
+env = RecordVideo(env, mdir, episode_trigger=lambda e_idx:True)
+env.reset()
+env.start_video_recorder()
 
 def get_suit_val(card_param):
     if card_param == 0:
