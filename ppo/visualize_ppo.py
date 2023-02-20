@@ -19,7 +19,7 @@ mdir = save_location = os.path.dirname(os.path.realpath(__file__)) + '/recording
 
 env = solitaire_env.SolitaireWorldEnv(render_mode="human")
 #env = Monitor(env, directory=save_location, force=True, video_callable=lambda episode_id: True)
-env = RecordVideo(env, mdir, episode_trigger=lambda e_idx:True)
+env = RecordVideo(env, mdir, episode_trigger=lambda e_idx:0)
 env.reset()
 env.start_video_recorder()
 
