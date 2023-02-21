@@ -63,7 +63,7 @@ DQN seems to be slightly better than PPO, winning about 15% of the time. This wo
 
 Below is a video of the DQN agent solving a game of Solitare
 
-vid
+https://user-images.githubusercontent.com/11727102/220307302-31844891-a4ed-45e7-b895-f8857b622354.mp4
 
 You can see that the agent is struggling going in circles, until it moves a 9 that was under a 10 to a different 10, allowing that 10 to be added to the suits, and unlocking a new card, thus solving the puzzle (around 57 second mark). This actually probably just happened by chance as that action was available for some moves, and it's unlikely the state-space changing slightly like it did would cause that, and therefore was probably one of the epsilon random actions. Under my experiments, lowing episilon too low actually really hurt the win rate, probably for reasons like this.
 
