@@ -959,7 +959,7 @@ class SolitaireWorldEnv(gym.Env):
             pygame.event.pump()
             pygame.display.update()
             self.clock.tick(self.metadata["render_fps"])
-        else:
+        elif self.render_mode == "rgb_array":
             return np.transpose(
                 np.array(pygame.surfarray.pixels3d(self.screen)), axes=(1, 0, 2)
             )

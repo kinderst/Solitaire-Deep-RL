@@ -12,16 +12,14 @@ from tensorflow.keras import layers
 
 from gym_env import solitaire_env
 
-#from gym.wrappers import Monitor
-from gym.wrappers.record_video import RecordVideo
+from gym.wrappers.monitoring.video_recorder import VideoRecorder
 
-mdir = save_location = os.path.dirname(os.path.realpath(__file__)) + '/recordings'
+vid_path = "solitaire_ppo.mp4"
 
-env = solitaire_env.SolitaireWorldEnv(render_mode="human")
-#env = Monitor(env, directory=save_location, force=True, video_callable=lambda episode_id: True)
-env = RecordVideo(env, mdir, episode_trigger=lambda e_idx:0, video_length=500)
+env = solitaire_env.SolitaireWorldEnv(render_mode="rgb_array")
+
+video = VideoRecorder(env, vid_path)
 env.reset()
-env.start_video_recorder()
 
 def get_suit_val(card_param):
     if card_param == 0:
@@ -117,6 +115,10 @@ for i in range(num_episodes):
 		logits, action = sample_action(observation, impossible_actions)
 
 		observation = observation.reshape(1, -1)
+
+		env.render()
+		video.capture_frame()
+
 		observation_new, reward, terminated, info = env.step(action[0].numpy())
 
 		deck_num = observation_new["deck_position"]
@@ -132,4 +134,5 @@ for i in range(num_episodes):
 		observation = observation.reshape(1, -1)
 		impossible_actions = np.nonzero(info['action_mask'] == 0)[0]
 
+video.close()
 env.close()
