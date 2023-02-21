@@ -4,9 +4,9 @@ The repo contains different approaches used to try to (better) solve the classic
 
 ## Environment
 
-The environment was created as an OpenAI Gym environment, and contains all the logic needed to play 3-draw Klondike solitaire, as well as review it in Pygame with actual cards in the classic solitaire arrangement.
+The environment was created as an OpenAI Gym environment, and contains all the logic needed to play 3-draw Klondike solitaire, as well as view it in Pygame with actual cards in the classic solitaire arrangement.
 
-![Solitaire PPO Video](/img/solitaire-screen.PNG)
+![Solitaire Screen](/img/solitaire-screen.PNG)
 
 ### State Space
 
@@ -23,7 +23,7 @@ Cards are defined by 1-52, and their position in the array define their location
 The action space of the environment is defined as such:
 
 - action 0 is tapping deck
-- action 1 is tapping active deck card, attempting to sent to suit
+- action 1 is tapping active deck card, attempting to send to suit
 - actions 2-8 are trying to move top deck card to one of 7 other piles
 - actions 9-15 are trying to move suit's 0 (hearts) to one of 7 other piles
 - actions 16-22 are trying to move suit's 1 (diamonds) to one of 7 other piles
@@ -40,17 +40,32 @@ Several Deep Reinforcement Learning approaches have been applied to Solitaire. W
 
 The first naive attempt was using [Proximal Policy Optimization (PPO)](https://arxiv.org/abs/1707.06347), which is a policy gradient method, and should generally learn good actions from bad. It shouldn't be expected to find complicated paths -- unless by random chance -- as it will take a lot of learning to build into the algorithm the importance of the horizon in Solitaire. This is because for it to understand that playing one suboptimal move (such as removing a card from the Suits and putting it into a Pile) would be better than a currently better move, like putting a card from the deck into a pile, would be very hard and take a lot of time, and even then we wouldn't be guaranteed to find it.
 
-Here is a video of a typical PPO agent under similar hyperparameters and reward structure as defined in the scripts:
+The implementation is based off the Keras approach. Here is a video of a typical PPO agent under similar hyperparameters and reward structure as defined in the scripts:
 
-<video src='https://github.com/kinderst/Solitaire-Deep-RL/blob/main/ppo/solitaire_ppo.mp4' width=480></video>
+https://user-images.githubusercontent.com/11727102/220267610-60eb639d-9028-4df4-a042-b435411abd35.mp4
 
-It's clear that the agent is not optimal, but does a sufficient job. It will often get stuck doing some action that is positively rewarding, but not as good as others that may open up other cards. For example
+
+First of all, not all games of solitaire are able to be solved. However, it's clear that the agent is not optimal, but does a sufficient job. It will often get stuck doing some action that is positively rewarding, but not as good as others that may open up other cards.
+
+The best agent was able to win about 10% of games, which is slightly below human-level. More detailed results can be seen in the notebook script, or experimented on there. I believe it is certainly possible to get far above the 10% win rate with PPO, but will take experimentation with hyperparameter and reward space, along with how you define your action space.
 
 PPO should really only be considered a baseline here, as a policy gradient method won't be able to find complex paths needed to open up more cards in the future. Compared to something like tree-based search, PPO's horizon is far too shallow, especially given the complexity of the state space, to form a state-of-the-art policy.
 
 ### Deep Q Learning
 
 The next approach was [Deep Q Learning](https://arxiv.org/abs/1312.5602), a value-based approach hoping to leverage the fact that some state-action pairs may be better than others long term. Unfortunately, the horizon problem is stil an issue here as well, as state-actions pair have the horizon implicitly baked into the q-value and it probably won't have the ability to see far enough while generalizing the state-space.
+
+For this implementation, I used PyTorch instead, but staying with a fully connected network (though there is an implementation for a ResNet using the card numbers and suits as channels in the notebook script). Results can be seen in the graph of the rewards over episodes below. The positive reward spikes represent solutions to a solitaire game, as it gets rewarded more when it wins. Sometimes there are just no moves, and it gets penalized for cycling through the deck or moving pile cards uselessly, so there are also highly negative spikes as well
+
+![DQN Results](/img/dqn-learning.PNG)
+
+DQN seems to be slightly better than PPO, winning about 15% of the time. This would align with expectations, as more finely calculating precise state-action pairs would probably be better than just usually picking good actions like PPO, though certainly some randomness is needed to break from repetitions. That is also why the episilon greedy parameter is kept during action selection at inference time as well, as that was how it was optimal when it was trained on, and because otherwise it suffers from repetition
+
+Below is a video of the DQN agent solving a game of Solitare
+
+vid
+
+You can see that the agent is struggling going in circles, until it moves a 9 that was under a 10 to a different 10, allowing that 10 to be added to the suits, and unlocking a new card, thus solving the puzzle (around 57 second mark). This actually probably just happened by chance as that action was available for some moves, and it's unlikely the state-space changing slightly like it did would cause that, and therefore was probably one of the epsilon random actions. Under my experiments, lowing episilon too low actually really hurt the win rate, probably for reasons like this.
 
 ### MuZero and EfficientZero
 
