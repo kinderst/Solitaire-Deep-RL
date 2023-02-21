@@ -42,7 +42,7 @@ The first naive attempt was using [Proximal Policy Optimization (PPO)](https://a
 
 Here is a video of a typical PPO agent under similar hyperparameters and reward structure as defined in the scripts:
 
-[![Demo CountPages alpha](https://share.gifyoutube.com/KzB6Gb.gif)](https://www.youtube.com/watch?v=ek1j272iAmc)
+<video src='https://github.com/kinderst/Solitaire-Deep-RL/blob/main/ppo/solitaire_ppo.mp4' width=480 />
 
 It's clear that the agent is not optimal, but does a sufficient job. It will often get stuck doing some action that is positively rewarding, but not as good as others that may open up other cards. For example
 
